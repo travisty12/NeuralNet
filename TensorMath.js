@@ -12,7 +12,7 @@ class TensorMath {
   static randn(x = 0, y = 0) { 
     // Base case: just return normal distribution
     if (!(x || y)) return TensorMath.normalDistribution();
-    
+
     // Single input -- array of length x of base case returned
     if (!y) { 
       const output = []; 
@@ -30,3 +30,5 @@ class TensorMath {
     return output;
   }
 }
+
+export default TensorMath;

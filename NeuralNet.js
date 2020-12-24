@@ -1,3 +1,5 @@
+import TensorMath from "./TensorMath.js";
+
 class Network {
   constructor(sizes, name) { // takes in an array whose indices represent the number of neurons in each layer, e.g. [10, 16, 4] could represent a network with 10 inputs, a hidden layer of 16 neurons, and an output layer of 4 neurons
     this.name = name,
@@ -8,10 +10,16 @@ class Network {
   }
 
   generateBiases() {
-    return 0;
+    const output = [];
+    this.sizes.slice(1).forEach((i) => output.push(TensorMath.randn(i)));
+    return output;
   }
 
   generateWeights() {
     return 0;
   }
 }
+
+
+// let net = new Network([5,4,2],"asdf");
+// console.log(net.biases);

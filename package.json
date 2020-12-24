@@ -1,0 +1,13 @@
+{
+  "name": "neuralnet",
+  "version": "1.0.0",
+  "description": "#### Two classes meant to aid in quickly building a neural network of any size and depth.",
+  "main": "NeuralNet.js",
+  "scripts": {
+    "start": "node NeuralNet.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "type": "module"
+}
