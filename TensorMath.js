@@ -29,6 +29,19 @@ class TensorMath {
     }
     return output;
   }
+
+  // Activation function, 1 / (1 + e^(-z)). Always a value between 0 and 1
+  // If input is an array, it returns an array of activations
+  static sigmoid(z) {
+    if (typeof(z) == 'object') return z.map((el) => TensorMath.sigmoid(i));
+    return 1.0 / (1.0 + Math.exp(-z));
+  }
+
+  // Derivative of the activation, conveniently equal to sigmoid * (1 - sigmoid)
+  static sigmoid_prime(z) {
+    if (typeof(z) == 'object') return z.map((el) => TensorMath.sigmoid_prime(i));
+    return TensorMath.sigmoid(z) * (1 - TensorMath.sigmoid(z));
+  }
 }
 
 export default TensorMath;
