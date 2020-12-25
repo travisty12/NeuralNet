@@ -51,6 +51,16 @@ class TensorMath {
     if (uScalar) return v.map((el) => TensorMath.sum(u, el));
     if (vScalar) return u.map((el) => TensorMath.sum(v, el));
     return u.map((el,i) => TensorMath.sum(el,v[i]))
+  }  
+  
+  // Multiplies two arrays (or an array and a scalar, or two scalars, depending on type of inputs)
+  static product(u,v) {
+    const uScalar = typeof(u) == 'number';
+    const vScalar = typeof(v) == 'number';
+    if (uScalar && vScalar) return u * v;
+    if (uScalar) return v.map((el) => TensorMath.product(u, el));
+    if (vScalar) return u.map((el) => TensorMath.product(v, el));
+    return u.map((el,i) => TensorMath.product(el,v[i]))
   }
 }
 
