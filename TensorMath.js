@@ -30,6 +30,17 @@ class TensorMath {
     return output;
   }
 
+  // given an array, returns an array of the same shape, with 0 for values. Used to initialize deltas for weights and biases
+  static zeroes(input) {
+    return input.map((el) => (typeof(el) == 'number' ? 0 : TensorMath.zeroes(el)));
+  }
+
+  // Transposes an array. ex. [ [1,2], [3,4], [5,6] ] ==> [ [1,2,3], [4,5,6] ]
+  static transpose(input) {
+    if (typeof(input[0]) == 'number') return input;
+    return input[0].map((_,i) => input.map((_,j) => input[j][i]))
+  }
+
   // Activation function, 1 / (1 + e^(-z)). Always a value between 0 and 1
   // If input is an array, it returns an array of activations
   static sigmoid(z) {
