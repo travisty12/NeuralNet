@@ -42,6 +42,16 @@ class TensorMath {
     if (typeof(z) == 'object') return z.map((el) => TensorMath.sigmoid_prime(i));
     return TensorMath.sigmoid(z) * (1 - TensorMath.sigmoid(z));
   }
+
+  // Adds two arrays (or an array and a scalar, or two scalars, depending on type of inputs)
+  static sum(u,v) {
+    const uScalar = typeof(u) == 'number';
+    const vScalar = typeof(v) == 'number';
+    if (uScalar && vScalar) return u + v;
+    if (uScalar) return v.map((el) => TensorMath.sum(u, el));
+    if (vScalar) return u.map((el) => TensorMath.sum(v, el));
+    return u.map((el,i) => TensorMath.sum(el,v[i]))
+  }
 }
 
 export default TensorMath;
