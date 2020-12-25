@@ -21,6 +21,47 @@ class Network {
     }
     return pairs.map((i) => TensorMath.randn(i[1],i[0]));
   }
+
+  // Stochastic Gradient Descent -- the main method that needs to be called after construction to train the weights and biases
+  SGD(training_data, epochs, mini_batch_size, eta, test_data = null) {
+    let n_test;
+    if (test_data) n_test = test_data.length;
+    const n = training_data.length;
+
+    // loops over all training data for a set number of epochs
+    for (let i = 0; i < epochs; i++) {
+      training_data.sort(() => Math.random() - 0.5);
+      const mini_batches = [];
+
+      // splits training data into mini batches
+      for (let j = 0; j < n; j += mini_batch_size) {
+        mini_batches.push(training_data.slice(j, j+mini_batch_size));
+      }
+      let progress = 0;
+      // updates the weights and biases for each mini batch
+      mini_batches.forEach((mini_batch, k) => {
+        this.update_mini_batch(mini_batch, eta);
+        // logs the progress through each epoch (most useful in larger networks)
+        if (Math.floor((100.0 * k * mini_batch_size) / n) != progress) {
+          progress = Math.floor((100.0 * k * mini_batch_size) / n);
+          console.log(`${progress}% through epoch ${i}`);
+        }
+      });
+      if (test_data) {
+        console.log(`Epoch ${i}: ${this.evaluate(test_data)} / ${n_test}`);
+      } else {
+        console.log(`Epoch ${i} complete.`);
+      }
+    }
+  }
+
+  update_mini_batch(mini_batch, eta) {
+
+  }
+
+  evaluate(test_data) {
+
+  }
 }
 
 

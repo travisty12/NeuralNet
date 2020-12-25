@@ -40,7 +40,7 @@ class TensorMath {
   // Derivative of the activation, conveniently equal to sigmoid * (1 - sigmoid)
   static sigmoid_prime(z) {
     if (typeof(z) == 'object') return z.map((el) => TensorMath.sigmoid_prime(i));
-    return TensorMath.sigmoid(z) * (1 - TensorMath.sigmoid(z));
+    return TensorMath.product(TensorMath.sigmoid(z), (1 - TensorMath.sigmoid(z)));
   }
 
   // Adds two arrays (or an array and a scalar, or two scalars, depending on type of inputs)
