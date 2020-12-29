@@ -64,8 +64,22 @@ class Network {
     }
   }
 
+  // Returns nothing -- just updates the weights and biases based on the error reported by backpropagation
+  // Inputs: mini_batch, a small collection of training input/output pairs, and eta, the coefficient of learning (how radically the weights and biases should be changed with respect to the error)
   update_mini_batch(mini_batch, eta) {
+    let gradient_b = TensorMath.zeroes(this.biases);
+    let gradient_w = TensorMath.zeroes(this.weights);
+    mini_batch.forEach(([x,y]) => {
+      let [delta_gradient_b, delta_gradient_w] = this.backprop(x,y);
+      gradient_b = gradient_b.map((el, i) => TensorMath.sum(el, delta_gradient_b[i]));
+      gradient_w = gradient_w.map((el, i) => TensorMath.sum(el, delta_gradient_w[i]));
+    });
+    this.weights = this.weights.map((el, i) => TensorMath.sum(el, TensorMath.product(-(eta/mini_batch.length), gradient_w[i])));
+    this.biases = this.biases.map((el, i) => TensorMath.sum(el, TensorMath.product(-(eta/mini_batch.length), gradient_b[i])));
+  }
 
+  backprop(x, y) {
+    return [null, null];
   }
 
   // Using the test data fed into SGD, shows each epoch how many test inputs it can correctly identify. Just returns a number!
