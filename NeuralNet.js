@@ -22,6 +22,15 @@ class Network {
     return pairs.map((i) => TensorMath.randn(i[1],i[0]));
   }
 
+  // Takes in a set of initial inputs, and runs them through each layer, returning the output layer's activations
+  // Each layer, the dot product of the weights and input returns an array with the shape of the next layer's neurons. They get summed with the biases to get the weighted inputs for the next layer, and the sigmoid function returns their activation. That activation is then used as the input for the next loop's dot product until the final layer.
+  feedForward(a) {
+    this.weights.forEach((_,i) => {
+      a = TensorMath.sigmoid(TensorMath.sum(TensorMath.dot(this.weights[i], a), this.biases[i]));
+    });
+    return a;
+  }
+
   // Stochastic Gradient Descent -- the main method that needs to be called after construction to train the weights and biases
   SGD(training_data, epochs, mini_batch_size, eta, test_data = null) {
     let n_test;
@@ -65,5 +74,5 @@ class Network {
 }
 
 
-// let net = new Network([5,4,2],"asdf");
-// console.log(net.weights);
+let net = new Network([5,4,2],"asdf");
+console.log(net.weights);

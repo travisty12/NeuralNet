@@ -64,7 +64,7 @@ class TensorMath {
     return u.map((el,i) => TensorMath.sum(el,v[i]))
   }  
   
-  // Multiplies two arrays (or an array and a scalar, or two scalars, depending on type of inputs)
+  // Multiplies two arrays of the same exact size (or an array and a scalar, or two scalars, depending on type of inputs)
   static product(u,v) {
     const uScalar = typeof(u) == 'number';
     const vScalar = typeof(v) == 'number';
@@ -72,6 +72,28 @@ class TensorMath {
     if (uScalar) return v.map((el) => TensorMath.product(u, el));
     if (vScalar) return u.map((el) => TensorMath.product(v, el));
     return u.map((el,i) => TensorMath.product(el,v[i]))
+  }
+
+  // Gives the dot product of two arrays-of-arrays
+  static dot(u,v) {
+    return u.map((el,i) => {
+      // Case: in feedForward. Dot product of a layer's weights and inputs returns an array the same shape as the next layer's inputs (without the biases added, yet)
+      if (el.length == v.length) {
+        return el.reduce((summand, _, j) => summand + el[j] * v[j], 0);
+
+      } else if (el.length == 1) {
+        return v.map((el2) => el[0] * el2);
+        
+      } else {
+        return el.map((_,j) => {
+          let total = 0;
+          v.forEach((_,k) => {
+            total += v[i][0] * u[k][j];
+          });
+          return total;
+        });
+      }
+    });
   }
 }
 
