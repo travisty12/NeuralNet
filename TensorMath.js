@@ -54,6 +54,18 @@ class TensorMath {
     return TensorMath.product(TensorMath.sigmoid(z), (1 - TensorMath.sigmoid(z)));
   }
 
+  // Takes in 2 arrays, returns a bool on whether they represent the same info
+  static arrayEquality(u,v) {
+    if (u === v) return true;
+    if (u == null || v == null) return false;
+    if (u.length != v.length) return false;
+
+    for (let i = 0; i < u.length; i++) {
+      if (u[i] != v[i]) return false;
+    }
+    return true;
+  }
+
   // Adds two arrays (or an array and a scalar, or two scalars, depending on type of inputs)
   static sum(u,v) {
     const uScalar = typeof(u) == 'number';

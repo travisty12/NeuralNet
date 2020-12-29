@@ -68,8 +68,14 @@ class Network {
 
   }
 
+  // Using the test data fed into SGD, shows each epoch how many test inputs it can correctly identify. Just returns a number!
   evaluate(test_data) {
-
+    // For all test data, runs it through the current network and rounds the final result to the nearest number, to compare to the theoretical expected output
+    let test_results = test_data.map(([x,y]) => {
+      return [this.feedForward(x).map((el) => Math.round(el)),y];
+    });
+    // Looping over each pair of test/theory output arrays in test_results, increments the 'sum' value if the arrays are equal. Returns the number of correct results
+    return test_results.reduce((sum, [test, theory], i) => (TensorMath.arrayEquality(test, theory) ? sum + 1 : sum), 0);
   }
 }
 
