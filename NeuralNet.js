@@ -70,10 +70,14 @@ class Network {
     let gradient_b = TensorMath.zeroes(this.biases);
     let gradient_w = TensorMath.zeroes(this.weights);
     mini_batch.forEach(([x,y]) => {
+      // Finds the error for each bias, and every weight, for each training input
       let [delta_gradient_b, delta_gradient_w] = this.backprop(x,y);
+      // Sums the errors all together to find the average error for each bias and weight from all inputs in a mini batch
       gradient_b = gradient_b.map((el, i) => TensorMath.sum(el, delta_gradient_b[i]));
       gradient_w = gradient_w.map((el, i) => TensorMath.sum(el, delta_gradient_w[i]));
     });
+    // Updates the weights and biases using the average error. The greater the 'eta' value, the greater the change for a given error value.
+    // We multiply the gradient by a _negative_ coefficient, because the gradient represents how much an increase to 'el' would _increase_ the cost -- so we always go in the opposite direction of the gradient.
     this.weights = this.weights.map((el, i) => TensorMath.sum(el, TensorMath.product(-(eta/mini_batch.length), gradient_w[i])));
     this.biases = this.biases.map((el, i) => TensorMath.sum(el, TensorMath.product(-(eta/mini_batch.length), gradient_b[i])));
   }
