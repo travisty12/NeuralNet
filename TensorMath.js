@@ -44,13 +44,13 @@ class TensorMath {
   // Activation function, 1 / (1 + e^(-z)). Always a value between 0 and 1
   // If input is an array, it returns an array of activations
   static sigmoid(z) {
-    if (typeof(z) == 'object') return z.map((el) => TensorMath.sigmoid(i));
+    if (typeof(z) == 'object') return z.map((el) => TensorMath.sigmoid(el));
     return 1.0 / (1.0 + Math.exp(-z));
   }
 
   // Derivative of the activation, conveniently equal to sigmoid * (1 - sigmoid)
   static sigmoid_prime(z) {
-    if (typeof(z) == 'object') return z.map((el) => TensorMath.sigmoid_prime(i));
+    if (typeof(z) == 'object') return z.map((el) => TensorMath.sigmoid_prime(el));
     return TensorMath.product(TensorMath.sigmoid(z), (1 - TensorMath.sigmoid(z)));
   }
 
@@ -96,6 +96,12 @@ class TensorMath {
       } else if (el.length == 1) {
         return v.map((el2) => el[0] * el2);
         
+      } else if (typeof(el) == 'number') {
+        if (typeof(v[0]) == 'number') {
+          return v.map(el2 => el2 * el);
+        } else {
+          return v[0].map(el2 => el2 * el);
+        }
       } else {
         return el.map((_,j) => {
           let total = 0;

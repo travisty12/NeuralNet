@@ -82,8 +82,49 @@ class Network {
     this.biases = this.biases.map((el, i) => TensorMath.sum(el, TensorMath.product(-(eta/mini_batch.length), gradient_b[i])));
   }
 
+  // Takes in training input and output arrays, and returns the cost gradient (i.e. error) with respect to biases and weights
   backprop(x, y) {
-    return [null, null];
+    let gradient_b = TensorMath.zeroes(this.biases);
+    let gradient_w = TensorMath.zeroes(this.weights);
+    // initial activation (just the input layer's values)
+    let activation = x;
+    // Array of activations for each layer
+    let activations = [x];
+    // Array of weighted inputs for each layer after the first
+    let zs = [];
+    this.biases.forEach((b,i) => {
+      // Calculates and stores the weighted input and activation array for each layer
+      let z = TensorMath.sum(TensorMath.dot(this.weights[i], activation), b);
+      zs.push(z);
+      activation = TensorMath.sigmoid(z);
+      activations.push(activation);
+    });
+
+    // Delta is initially the error of the output layer. The basic Quadratic Cost function causes delta to be the cost derivative times sigmoid prime. The Cross-Entropy Cost function causes delta to just be the cost derivative.
+    let delta = this.cost_derivative(activations[activations.length-1], y); // Cross Entropy
+    // let delta = TensorMath.product(this.cost_derivative(activations[activations.length-1], y), TensorMath.sigmoid_prime(zs[zs.length-1])); // Quadratic
+
+    gradient_b[gradient_b.length-1] = delta;
+    gradient_w[gradient_w.length-1] = TensorMath.dot(delta, TensorMath.transpose(activations[activations.length-2]));
+
+    // Backpropagation loop! Goes backwards through the layers, finding the errors for each layer using the errors of the layer before it.
+    for (let l = 2; l < this.num_layers; l++) {
+      let z = zs[zs.length - l];
+      let sp = TensorMath.sigmoid_prime(z); // Used for Quadratic Cost
+
+      // The layer's weights are transposed, so instead of representing the weights _entering_ a neuron in layer l+1, they represent the weights _leaving_ the neuron in layer l. Multiplying that by the delta gives the error from each neuron in layer l, letting you travel backwards through the net.
+
+      delta = TensorMath.product(TensorMath.dot(TensorMath.transpose(this.weights[this.weights.length-l+1]), delta), sp); // Quadratic Cost
+      // delta = TensorMath.dot(TensorMath.transpose(this.weights[this.weights.length-l+1]), delta); // Cross-Entropy Cost
+
+      gradient_b[gradient_b.length-l] = delta;
+      gradient_w[gradient_w.length-l] = TensorMath.dot(delta, TensorMath.transpose(activations[activations.length-l-1]));
+    }
+    return [gradient_b, gradient_w];
+  }
+
+  cost_derivative(output_activations, y) {
+    return output_activations.map((_, i) => output_activations[i] - y[i]);
   }
 
   // Using the test data fed into SGD, shows each epoch how many test inputs it can correctly identify. Just returns a number!
@@ -98,5 +139,18 @@ class Network {
 }
 
 
-let net = new Network([5,4,2],"asdf");
-console.log(net.weights);
+let net = new Network([10,8,4],"decimalToBinary");
+let a = [
+  [[1,0,0,0,0,0,0,0,0,0],[0,0,0,0]],
+  [[0,1,0,0,0,0,0,0,0,0],[1,0,0,0]],
+  [[0,0,1,0,0,0,0,0,0,0],[0,1,0,0]],
+  [[0,0,0,1,0,0,0,0,0,0],[1,1,0,0]],
+  [[0,0,0,0,1,0,0,0,0,0],[0,0,1,0]],
+  [[0,0,0,0,0,1,0,0,0,0],[1,0,1,0]],
+  [[0,0,0,0,0,0,1,0,0,0],[0,1,1,0]],
+  [[0,0,0,0,0,0,0,1,0,0],[1,1,1,0]],
+  [[0,0,0,0,0,0,0,0,1,0],[0,0,0,1]],
+  [[0,0,0,0,0,0,0,0,0,1],[1,0,0,1]],
+];
+net.SGD(a,1000,10,0.1,a);
+debugger;
