@@ -109,13 +109,13 @@ class Network {
 
     // Backpropagation loop! Goes backwards through the layers, finding the errors for each layer using the errors of the layer before it.
     for (let l = 2; l < this.num_layers; l++) {
-      let z = zs[zs.length - l];
-      let sp = TensorMath.sigmoid_prime(z); // Used for Quadratic Cost
+      // let z = zs[zs.length - l]; // Used for Quadratic Cost
+      // let sp = TensorMath.sigmoid_prime(z); // Used for Quadratic Cost
 
       // The layer's weights are transposed, so instead of representing the weights _entering_ a neuron in layer l+1, they represent the weights _leaving_ the neuron in layer l. Multiplying that by the delta gives the error from each neuron in layer l, letting you travel backwards through the net.
 
-      delta = TensorMath.product(TensorMath.dot(TensorMath.transpose(this.weights[this.weights.length-l+1]), delta), sp); // Quadratic Cost
-      // delta = TensorMath.dot(TensorMath.transpose(this.weights[this.weights.length-l+1]), delta); // Cross-Entropy Cost
+      // delta = TensorMath.product(TensorMath.dot(TensorMath.transpose(this.weights[this.weights.length-l+1]), delta), sp); // Quadratic Cost
+      delta = TensorMath.dot(TensorMath.transpose(this.weights[this.weights.length-l+1]), delta); // Cross-Entropy Cost
 
       gradient_b[gradient_b.length-l] = delta;
       gradient_w[gradient_w.length-l] = TensorMath.dot(delta, TensorMath.transpose(activations[activations.length-l-1]));
@@ -152,5 +152,5 @@ let a = [
   [[0,0,0,0,0,0,0,0,1,0],[0,0,0,1]],
   [[0,0,0,0,0,0,0,0,0,1],[1,0,0,1]],
 ];
-net.SGD(a,1000,10,0.1,a);
+net.SGD(a,10000,10,0.1,a);
 debugger;

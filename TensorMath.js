@@ -89,27 +89,12 @@ class TensorMath {
   // Gives the dot product of two arrays-of-arrays
   static dot(u,v) {
     return u.map((el,i) => {
-      // Case: in feedForward. Dot product of a layer's weights and inputs returns an array the same shape as the next layer's inputs (without the biases added, yet)
       if (el.length == v.length) {
+        // Case: used to find weighted inputs (before adding bias into account), in feedforward and backprop. Also used when multiplying a layer's weights by the delta in backprop
         return el.reduce((summand, _, j) => summand + el[j] * v[j], 0);
-
-      } else if (el.length == 1) {
-        return v.map((el2) => el[0] * el2);
-        
-      } else if (typeof(el) == 'number') {
-        if (typeof(v[0]) == 'number') {
-          return v.map(el2 => el2 * el);
-        } else {
-          return v[0].map(el2 => el2 * el);
-        }
       } else {
-        return el.map((_,j) => {
-          let total = 0;
-          v.forEach((_,k) => {
-            total += v[i][0] * u[k][j];
-          });
-          return total;
-        });
+        // Case: in backprop. Dot product of delta and the transposed activations of a layer.
+        return v.map(el2 => el2 * el);
       }
     });
   }
