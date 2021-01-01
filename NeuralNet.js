@@ -9,6 +9,20 @@ class Network {
     this.weights = this.generateWeights() // randomized weights connecting neurons of each layer on a normal distribution (gaussian curve). So for the above example, [[new Array(4).fill(new Array(5).fill(normal distrubtion))], new Array(2).fill(new Array(4).fill(normal distribution))]
   }
 
+  toJSON() {
+    return {
+      name: this.name,
+      num_layers: this.num_layers,
+      sizes: this.sizes,
+      biases: this.biases,
+      weights: this.weights
+    }
+  }
+
+  stringify() {
+    return `{"name":${JSON.stringify(this.name)},"num_layers":"${JSON.stringify(this.num_layers)}","sizes":"${JSON.stringify(this.sizes)}","biases":"${JSON.stringify(this.biases)}","weights":"${JSON.stringify(this.weights)}"}`;
+  }
+
   generateBiases() {
     // Returns an array, each index being the size of each layer AFTER the inputs, randomized values for initial biases.
     return this.sizes.slice(1).map((i) => TensorMath.randn(i)); 
@@ -138,20 +152,20 @@ class Network {
   }
 }
 
-// // Sample network to test SGD
-// let net = new Network([10,8,4],"decimalToBinary");
-// let a = [
-//   [[1,0,0,0,0,0,0,0,0,0],[0,0,0,0]],
-//   [[0,1,0,0,0,0,0,0,0,0],[1,0,0,0]],
-//   [[0,0,1,0,0,0,0,0,0,0],[0,1,0,0]],
-//   [[0,0,0,1,0,0,0,0,0,0],[1,1,0,0]],
-//   [[0,0,0,0,1,0,0,0,0,0],[0,0,1,0]],
-//   [[0,0,0,0,0,1,0,0,0,0],[1,0,1,0]],
-//   [[0,0,0,0,0,0,1,0,0,0],[0,1,1,0]],
-//   [[0,0,0,0,0,0,0,1,0,0],[1,1,1,0]],
-//   [[0,0,0,0,0,0,0,0,1,0],[0,0,0,1]],
-//   [[0,0,0,0,0,0,0,0,0,1],[1,0,0,1]],
-// ];
-// net.SGD(a,10000,10,0.1,a);
+// Sample network to test SGD
+let net = new Network([10,8,4],"decimalToBinary");
+let a = [
+  [[1,0,0,0,0,0,0,0,0,0],[0,0,0,0]],
+  [[0,1,0,0,0,0,0,0,0,0],[1,0,0,0]],
+  [[0,0,1,0,0,0,0,0,0,0],[0,1,0,0]],
+  [[0,0,0,1,0,0,0,0,0,0],[1,1,0,0]],
+  [[0,0,0,0,1,0,0,0,0,0],[0,0,1,0]],
+  [[0,0,0,0,0,1,0,0,0,0],[1,0,1,0]],
+  [[0,0,0,0,0,0,1,0,0,0],[0,1,1,0]],
+  [[0,0,0,0,0,0,0,1,0,0],[1,1,1,0]],
+  [[0,0,0,0,0,0,0,0,1,0],[0,0,0,1]],
+  [[0,0,0,0,0,0,0,0,0,1],[1,0,0,1]],
+];
+net.SGD(a,1000,10,0.1,a);
 
-// debugger; // If you want to run this from the console and see the effects on parameters / feed forward inputs
+debugger; // If you want to run this from the console and see the effects on parameters / feed forward inputs
