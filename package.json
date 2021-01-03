@@ -5,6 +5,7 @@
   "main": "NeuralNet.js",
   "scripts": {
     "start": "node NeuralNet.js",
+    "inspect": "node inspect NeuralNet.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "",

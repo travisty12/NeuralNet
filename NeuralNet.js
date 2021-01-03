@@ -50,6 +50,7 @@ class Network {
     let n_test;
     if (test_data) n_test = test_data.length;
     const n = training_data.length;
+    const lambda = 0.0 // Used for regularization
 
     // loops over all training data for a set number of epochs
     for (let i = 0; i < epochs; i++) {
@@ -63,7 +64,7 @@ class Network {
       let progress = 0;
       // updates the weights and biases for each mini batch
       mini_batches.forEach((mini_batch, k) => {
-        this.update_mini_batch(mini_batch, eta);
+        this.update_mini_batch(mini_batch, eta, lambda, n);
         // logs the progress through each epoch (most useful in larger networks)
         if (Math.floor((100.0 * k * mini_batch_size) / n) != progress) {
           progress = Math.floor((100.0 * k * mini_batch_size) / n);
@@ -80,7 +81,7 @@ class Network {
 
   // Returns nothing -- just updates the weights and biases based on the error reported by backpropagation
   // Inputs: mini_batch, a small collection of training input/output pairs, and eta, the coefficient of learning (how radically the weights and biases should be changed with respect to the error)
-  update_mini_batch(mini_batch, eta) {
+  update_mini_batch(mini_batch, eta, lambda, n) {
     let gradient_b = TensorMath.zeroes(this.biases);
     let gradient_w = TensorMath.zeroes(this.weights);
     mini_batch.forEach(([x,y]) => {
@@ -92,7 +93,7 @@ class Network {
     });
     // Updates the weights and biases using the average error. The greater the 'eta' value, the greater the change for a given error value.
     // We multiply the gradient by a _negative_ coefficient, because the gradient represents how much an increase to 'el' would _increase_ the cost -- so we always go in the opposite direction of the gradient.
-    this.weights = this.weights.map((el, i) => TensorMath.sum(el, TensorMath.product(-(eta/mini_batch.length), gradient_w[i])));
+    this.weights = this.weights.map((el, i) => TensorMath.sum(TensorMath.product(1 - (eta * lambda)/n,el), TensorMath.product(-(eta/mini_batch.length), gradient_w[i])));
     this.biases = this.biases.map((el, i) => TensorMath.sum(el, TensorMath.product(-(eta/mini_batch.length), gradient_b[i])));
   }
 
@@ -166,6 +167,6 @@ class Network {
 //   [[0,0,0,0,0,0,0,0,1,0],[0,0,0,1]],
 //   [[0,0,0,0,0,0,0,0,0,1],[1,0,0,1]],
 // ];
-// net.SGD(a,1000,10,0.1,a);
+// net.SGD(a,10000,10,0.1,a);
 
 // debugger; // If you want to run this from the console and see the effects on parameters / feed forward inputs
